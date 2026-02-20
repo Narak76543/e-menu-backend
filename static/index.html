@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management with Images</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>User Management</h1>
+
+        <div class="card">
+            <h3 id="formTitle">Add New User</h3>
+            <form id="userForm">
+                <input type="hidden" id="isEditMode" value="false" >
+                <input type="hidden" id="currentUserId"> 
+                
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="text" id="phone" placeholder="Phone Number">
+                <input type="text" id="job" placeholder="Job" required>
+                
+                <div class="file-input">
+                    <label for="userImage">Profile Picture:</label>
+                    <input type="file" id="userImage" accept="image/*">
+                </div>
+                
+                <button type="submit" id="submitBtn">Create User</button>
+                <button type="button" id="cancelBtn" style="display:none; background:#95a5a6;">Cancel Edit</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Registered Users</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Job</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
