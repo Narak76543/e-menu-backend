@@ -1,24 +1,11 @@
 from fastapi import Depends, Form, HTTPException
 from sqlalchemy.orm import Session
 
+from ..common.parsing import parse_bool
 from api.categories import models
 from core.db import get_db
 from deps.permissions import AdminOnly
 from main import app
-
-
-def parse_bool(value):
-    if value is None:
-        return None
-    if isinstance(value, bool):
-        return value
-
-    v = str(value).strip().lower()
-    if v in ("true", "1", "on", "yes"):
-        return True
-    if v in ("false", "0", "off", "no"):
-        return False
-    return None
 
 
 @app.post("/category", tags=["Category"])

@@ -6,3 +6,4 @@ from .orders.views import *
 from .order_items.views import *
 from .admin_user.views import *
 from .public.views import *
+from .telegram.views import *
