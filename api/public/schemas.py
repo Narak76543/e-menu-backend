@@ -1,64 +1,45 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from datetime import datetime
 
+class Money(BaseModel):
+    usd: float
+    khr: float
 
-class PublicCategoryOut(BaseModel):
+class ProductMiniOut(BaseModel):
     id: str
-    name: str
-    is_active: bool = True
-
-    class Config:
-        from_attributes = True
-
-
-class PublicProductOut(BaseModel):
-    id         : str
-    category_id: str
-    name       : str
-    price      : float
-    image_url  : str | None = None
-    description: str | None = None
-    is_active  : bool = True
-
-
-
-class PublicTableOut(BaseModel):
-    id       : str
-    code     : str
-    name     : str | None = None
-    is_active: bool = True
-
-
-class OrderItemIn(BaseModel):
-    product_id: str
-    qty       : int = Field(..., ge=1)
-
-
-class PublicOrderCreateIn(BaseModel):
-    table_code       : str
-    telegram_username: str | None = None
-    note             : str | None = None
-    items            : list[OrderItemIn]
-
-
-class PublicOrderOut(BaseModel):
-    id          : str
-    table_id    : str
-    status      : str
-    note        : str | None = None
-    total_amount: float
+    name: str | None = None
+    name_lc: str | None = None
+    image_url: str | None = None
 
 class PublicOrderItemOut(BaseModel):
-    product_id    : str
-    product_name  : str
-    product_name_lc: str | None = None
-    image_url     : str | None = None
-    qty           : int
-    price         : float
-    subtotal      : float
-    price_in_khr  : float
-    subtotal_khr  : float
+    product: ProductMiniOut
+    qty: int
+    unit_price: Money
+    line_total: Money
+
+class TableMiniOut(BaseModel):
+    code: str
+    name: str | None = None
+
+class PaymentOut(BaseModel):
+    method: str | None = None
+    status: str | None = None
+
+class PublicOrderHeaderOut(BaseModel):
+    id: str
+    order_no: str | None = None
+    status: str
+    table: TableMiniOut
+    note: str | None = None
+    payment: PaymentOut
+    created_at: datetime | None = None
+
+class PublicOrderSummaryOut(BaseModel):
+    item_count: int
+    subtotal: Money
+    total: Money
 
 class PublicOrderDetailOut(BaseModel):
-    
-    order: PublicOrderOut
+    order: PublicOrderHeaderOut
     items: list[PublicOrderItemOut]
+    summary: PublicOrderSummaryOut

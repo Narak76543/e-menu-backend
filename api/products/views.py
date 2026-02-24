@@ -4,6 +4,7 @@ import shutil
 from typing import Optional
 from fastapi import Depends, Form, HTTPException, UploadFile, File, Request
 from sqlalchemy.orm import Session
+from ..common.parsing import parse_bool
 from api.products import models
 from api.categories import models as category_models
 from core.db import get_db
@@ -13,20 +14,6 @@ from main import app
 
 UPLOAD_DIR = "static/images"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-
-def parse_bool(value):
-    if value is None:
-        return None
-    if isinstance(value, bool):
-        return value
-
-    v = str(value).strip().lower()
-    if v in ("true", "1", "on", "yes"):
-        return True
-    if v in ("false", "0", "off", "no"):
-        return False
-    return None
 
 
 def save_upload_image(image: UploadFile) -> str:

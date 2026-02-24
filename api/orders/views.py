@@ -8,7 +8,6 @@ from api.orders import models as order_models
 from api.orders.enums import OrderStatus, PaymentMethod, PaymentStatus
 from api.tables import models as table_models
 from api.telegram_users import models as tg_models
-from fastapi import Depends
 
 
 def generate_order_no(db: Session) -> str:
