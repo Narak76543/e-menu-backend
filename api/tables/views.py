@@ -1,3 +1,5 @@
+from deps.auth import require_role
+from deps.permissions import AdminOnly
 from fastapi import Depends, Form, HTTPException
 from sqlalchemy.orm import Session
 
@@ -26,6 +28,7 @@ async def create_table(
     name     : str | None = Form(None),
     is_active: str | None = Form(None),
     db       : Session    = Depends(get_db),
+    _=AdminOnly,
 ):
 
     exists = db.query(models.TableModel).filter(models.TableModel.code == code).first()
@@ -52,6 +55,7 @@ async def get_all_table(
     skip : int     = 0,
     limit: int     = 10,
     db   : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     tables = db.query(models.TableModel).offset(skip).limit(limit).all()
     return tables
@@ -77,6 +81,7 @@ async def update_table(
     name     : str | None = Form(None),
     is_active: str | None = Form(None),
     db       : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     table = db.query(models.TableModel).filter(models.TableModel.id == table_id).first()
     if not table:
@@ -115,6 +120,7 @@ async def update_table(
 async def delete_table(
     table_id: str,
     db      : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     table = db.query(models.TableModel).filter(models.TableModel.id == table_id).first()
     if not table:

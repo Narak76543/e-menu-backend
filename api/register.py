@@ -4,3 +4,5 @@ from .categories.views import *
 from .products.views import *
 from .orders.views import *
 from .order_items.views import *
+from .admin_user.views import *
+from .public.views import *

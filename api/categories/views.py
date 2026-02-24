@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from api.categories import models
 from core.db import get_db
+from deps.permissions import AdminOnly
 from main import app
 
 
@@ -28,6 +29,7 @@ async def create_category(
     is_active  : str | None = Form(None),
     short_order: int        = Form(...),
     db         : Session    = Depends(get_db),
+    _=AdminOnly,
 ):
     exists = db.query(models.CategoriesModel).filter(models.CategoriesModel.name == name).first()
     if exists:
@@ -54,6 +56,7 @@ async def get_all_category(
     skip : int     = 0,
     limit: int     = 10,
     db   : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     categories = (
         db.query(models.CategoriesModel)
@@ -84,6 +87,7 @@ async def update_category(
     is_active  : str | None = Form(None),
     short_order: int | None = Form(None),
     db         : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     category = db.query(models.CategoriesModel).filter(models.CategoriesModel.id == category_id).first()
     if not category:
@@ -124,6 +128,7 @@ async def update_category(
 async def delete_category(
     category_id: str,
     db         : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     category = db.query(models.CategoriesModel).filter(models.CategoriesModel.id == category_id).first()
     if not category:

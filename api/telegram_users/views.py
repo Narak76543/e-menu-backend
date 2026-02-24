@@ -1,4 +1,5 @@
 from fastapi import Form, HTTPException, Depends
+from deps.permissions import AdminOnly
 from main import app
 from core.db import get_db
 from api.telegram_users import models
@@ -11,6 +12,7 @@ def create_telegram_user(
     telegram_user_id : str     = Form(...),
     telegram_username: str     = Form(...),
     db               : Session = Depends(get_db),
+    _=AdminOnly,
 ):
 
     exists = db.query(models.Telegram_user).filter(
@@ -39,6 +41,7 @@ async def get_all_tg_user(
     skip : int     = 0,
     limit: int     = 10,
     db   : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     users = db.query(models.Telegram_user).offset(skip).limit(limit).all()
     return users
@@ -48,6 +51,7 @@ async def get_all_tg_user(
 async def get_tg_user_by_id(
     tg_user_id: str,
     db        : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     user = db.query(models.Telegram_user).filter(
         models.Telegram_user.id == tg_user_id
@@ -68,6 +72,7 @@ async def update_tg_user(
     telegram_user_id : str | None = Form(None),
     telegram_username: str | None = Form(None),
     db               : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     user = db.query(models.Telegram_user).filter(
         models.Telegram_user.id == tg_user_id
@@ -104,6 +109,7 @@ async def update_tg_user(
 async def delete_tg_user(
     tg_user_id: str,
     db        : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     user = db.query(models.Telegram_user).filter(
         models.Telegram_user.id == tg_user_id

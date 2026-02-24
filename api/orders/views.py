@@ -1,12 +1,14 @@
 from fastapi import Depends, Form, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
+from deps.permissions import AdminOnly
 from main import app
 from core.db import get_db
 from api.orders import models as order_models
 from api.orders.enums import OrderStatus, PaymentMethod, PaymentStatus
 from api.tables import models as table_models
 from api.telegram_users import models as tg_models
+from fastapi import Depends
 
 
 def generate_order_no(db: Session) -> str:
@@ -42,6 +44,7 @@ async def create_order(
     payment_method  : PaymentMethod = Form(PaymentMethod.COD),
     note            : str | None    = Form(None),
     db              : Session       = Depends(get_db),
+    _=AdminOnly,
 ):
     # Check table exists
     table = db.query(table_models.TableModel).filter(table_models.TableModel.id == table_id).first()
@@ -100,6 +103,7 @@ async def get_all_orders(
     payment_status: PaymentStatus | None = None,
     table_id      : str | None           = None,
     db            : Session              = Depends(get_db),
+    _=AdminOnly,
 ):
     q = db.query(order_models.OrderModel)
 
@@ -127,6 +131,7 @@ async def get_all_orders(
 async def get_order_by_id(
     order_id: str,
     db      : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     order = db.query(order_models.OrderModel).filter(order_models.OrderModel.id == order_id).first()
     if not order:
@@ -147,6 +152,7 @@ async def update_order(
     total_amount   : int | None = Form(None),
     note           : str | None = Form(None),
     db             : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     order = db.query(order_models.OrderModel).filter(order_models.OrderModel.id == order_id).first()
     if not order:
@@ -193,6 +199,7 @@ async def update_order(
 async def delete_order(
     order_id: str,
     db: Session = Depends(get_db),
+    _=AdminOnly,
 ):
     order = db.query(order_models.OrderModel).filter(order_models.OrderModel.id == order_id).first()
     if not order:

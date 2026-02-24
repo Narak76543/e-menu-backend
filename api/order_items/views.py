@@ -1,5 +1,6 @@
 from fastapi import Depends, Form, HTTPException
 from sqlalchemy.orm import Session
+from deps.permissions import AdminOnly
 from main import app
 from core.db import get_db
 from api.order_items import models as item_models
@@ -32,6 +33,7 @@ async def create_order_item(
     product_id: str     = Form(...),
     qty       : int     = Form(...),
     db        : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     order = db.query(order_models.OrderModel).filter(order_models.OrderModel.id == order_id).first()
     if not order:
@@ -96,6 +98,7 @@ async def get_all_order_items(
     limit   : int        = 50,
     order_id: str | None = None,
     db      : Session    = Depends(get_db),
+    _=AdminOnly,
 ):
     q = db.query(item_models.OrderItemModel)
 
@@ -123,6 +126,7 @@ async def update_order_item(
     item_id: str,
     qty    : int | None = Form(None),
     db     : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     item = db.query(item_models.OrderItemModel).filter(item_models.OrderItemModel.id == item_id).first()
     if not item:
@@ -151,6 +155,7 @@ async def update_order_item(
 async def delete_order_item(
     item_id: str,
     db     : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     item = db.query(item_models.OrderItemModel).filter(item_models.OrderItemModel.id == item_id).first()
     if not item:

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from api.products import models
 from api.categories import models as category_models
 from core.db import get_db
+from deps.permissions import AdminOnly
 from main import app
 
 
@@ -105,6 +106,7 @@ async def create_product(
     is_active  : str | None = Form(None),
     image      : UploadFile | None = File(None),
     db         : Session = Depends(get_db),
+    _=AdminOnly,
 ):
 
     category = db.query(category_models.CategoriesModel).filter(
@@ -159,6 +161,7 @@ async def get_all_products(
     category_id: str | None = None,
     is_active  : bool | None = None,
     db         : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     q = db.query(models.ProductModel)
 
@@ -199,6 +202,7 @@ async def update_product(
     is_active  : str | None = Form(None),
     image      : UploadFile | None = File(None),
     db         : Session = Depends(get_db),
+    _=AdminOnly,
 ):
     product = db.query(models.ProductModel).filter(models.ProductModel.id == product_id).first()
     if not product:
@@ -262,6 +266,7 @@ async def update_product(
 async def delete_product(
     product_id: str,
     db: Session = Depends(get_db),
+    _=AdminOnly,
 ):
     product = db.query(models.ProductModel).filter(models.ProductModel.id == product_id).first()
     if not product:
